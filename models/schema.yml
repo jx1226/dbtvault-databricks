@@ -2,8 +2,13 @@ version: 2
 
 sources:
   - name: tpch_sample
-    schema: SQL_SERVER_SAMPLE_DATA{{ var('tpch_size', 10) }}
+    schema: raw
     tables:
-      - name: CUSTOMERS
-      - name: ORDERS
-      - name: PAYMENTS
+      - name: lineitems
+      - name: cutomers
+      - name: orders
+      - name: partsupp
+      - name: supplier
+      - name: part
+      - name: nations
+      - name: region

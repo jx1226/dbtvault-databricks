@@ -1,5 +1,5 @@
 {%- set yaml_metadata -%}
-source_model: 'raw_inventory'
+source_model: 'enriched_inventory'
 derived_columns:
   NATION_KEY: 'SUPPLIER_NATION_KEY'
   REGION_KEY: 'SUPPLIER_REGION_KEY'

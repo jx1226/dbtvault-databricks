@@ -22,16 +22,18 @@ vars:
 
 models:
   dbtvault_databricks:
-    raw_stage:
-      +materialized: view
+    enriched:
+      +materialized: incremental
       +tags:
-        - 'raw'
+        - 'enriched'
+
     stage:
       +materialized: view
       +tags:
         - 'stage'
       +enabled: true
-    raw_vault:
+
+    curated:
       +materialized: incremental
       +tags:
         - 'raw_vault'
