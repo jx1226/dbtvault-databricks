@@ -34,4 +34,5 @@ LEFT JOIN {{ source('tpch_sample', 'region') }} AS e
     ON d.N_REGIONKEY = e.R_REGIONKEY
 JOIN {{ ref('enriched_orders') }} AS f
     ON a.PS_PARTKEY = f.PARTKEY AND a.PS_SUPPKEY=f.SUPPLIERKEY
+WHERE f.ORDERDATE = TO_DATE('{{ var('load_date') }}')
 ORDER BY a.PS_PARTKEY, a.PS_SUPPKEY
