@@ -38,7 +38,7 @@ SELECT
 FROM {{ source('tpch_sample', 'orders') }} AS b
 LEFT JOIN {{ source('tpch_sample', 'lineitems') }} AS a
     ON a.L_ORDERKEY = b.O_ORDERKEY
-LEFT JOIN {{ source('tpch_sample', 'cutomers') }} AS c
+LEFT JOIN {{ source('tpch_sample', 'customers') }} AS c
     ON b.O_CUSTKEY  = c.C_CUSTKEY
 LEFT JOIN {{ source('tpch_sample', 'nations') }} AS d
     ON c.C_NATIONKEY  = d.N_NATIONKEY

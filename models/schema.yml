@@ -5,7 +5,7 @@ sources:
     schema: raw
     tables:
       - name: lineitems
-      - name: cutomers
+      - name: customers
       - name: orders
       - name: partsupp
       - name: supplier
