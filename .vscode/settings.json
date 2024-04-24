@@ -1,4 +1,4 @@
 {
     "dbt.enableNewLineagePanel": true,
-    "dbt.queryLimit": 500
+    "dbt.queryLimit": 475
 }
