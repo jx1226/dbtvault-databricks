@@ -5,3 +5,4 @@ pip install dbt-databricks
 
 # MAGIC %sh 
 # MAGIC dbt debug
+# MAGIC dbt run
