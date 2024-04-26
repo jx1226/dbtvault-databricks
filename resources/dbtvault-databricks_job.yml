@@ -21,8 +21,7 @@ resources:
             profiles_directory: dbt_profiles/
             commands:
             - 'dbt deps --target=${bundle.target}'
-            - 'dbt seed --target=${bundle.target} --vars "{ dev_schema: {{$dev_schema}} }"'
-            - 'dbt run --target=${bundle.target} --vars "{ dev_schema: {{$dev_schema}} }"'
+            - 'dbt run --target=${bundle.target} --vars "{ dev_schema: {{$dev_schema}} }" --model enriched_orders'
 
           libraries:
           - pypi:
