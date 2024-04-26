@@ -7,7 +7,7 @@ dbtvault-databricks:
      dev:
       type: databricks
       method: http
-      catalog: dbtvault-databricks
+      catalog: dbtvault_databricks
       schema: lakehouse
       http_path: sql/protocolv1/o/2777141288726595/0418-083919-hj4ytgn1
       # The workspace host / token are provided by Databricks

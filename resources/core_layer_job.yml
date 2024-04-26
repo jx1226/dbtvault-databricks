@@ -1,0 +1,93 @@
+resources:
+  jobs:
+    core_layer_job:
+      name: core_layer_job
+
+      tasks:
+        - task_key: enriched_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model enriched_orders'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+          - pypi:
+              package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: enriched_transactions
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model enriched_transactions'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: enriched_inventory
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model enriched_inventory'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: v_stg_inventory
+          depends_on:
+            - task_key: enriched_inventory
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model v_stg_inventory'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+
+        - task_key: v_stg_orders
+          depends_on:
+            - task_key: enriched_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model v_stg_orders'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        
+        - task_key: v_stg_transactions
+          depends_on:
+            - task_key: enriched_transactions
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model v_stg_transactions'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+      queue:
+        enabled: true

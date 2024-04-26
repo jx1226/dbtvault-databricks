@@ -2,7 +2,7 @@
 # to production using Databricks Asset Bundles.
 # See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
 bundle:
-  name: dbtvault-databricks
+  name: dbtvault_databricks
 
 include:
   - resources/*.yml
