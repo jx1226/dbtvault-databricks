@@ -52,4 +52,3 @@ LEFT JOIN {{ source('tpch_sample', 'nations') }} AS j
     ON h.S_NATIONKEY = j.N_NATIONKEY
 LEFT JOIN {{ source('tpch_sample', 'region') }} AS k
     ON j.N_REGIONKEY = k.R_REGIONKEY
-WHERE b.O_ORDERDATE = TO_DATE('{{ var('load_date') }}')

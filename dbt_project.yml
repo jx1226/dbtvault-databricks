@@ -2,47 +2,47 @@ name: dbtvault_databricks
 profile: dbtvault_databricks
 config-version: 2
 
-analysis-paths:
-  - analysis
-clean-targets:
-  - target
-macro-paths:
-  - macros
-model-paths:
-  - models
-test-paths:
-  - tests
-target-path: target
+# These configurations specify where dbt should look for different types of files.
+# For Databricks asset bundles, we put everything in src, as you may have
+# non-dbt resources in your project.
+model-paths: ["src/models"]
+analysis-paths: ["src/analysis"]
+test-paths: ["src/tests"]
+macro-paths: ["src/macros"]
+
+clean-targets:         # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_packages"
 
 vars:
   load_date: "2024-04-22"
 
 models:
-  dbtvault-databricks:
-    enriched:
-      +materialized: incremental
-      +tags:
-        - 'enriched'
+  dbtvault_databricks:
+      enriched:
+        +materialized: incremental
+        +tags:
+          - 'enriched'
 
-    stage:
-      +materialized: view
-      +tags:
-        - 'stage'
-      +enabled: true
+      stage:
+        +materialized: view
+        +tags:
+          - 'stage'
+        +enabled: true
 
-    curated:
-      +materialized: incremental
-      +tags:
-        - 'raw_vault'
-      hubs:
+      curated:
+        +materialized: incremental
         +tags:
-          - 'hub'
-      links:
-        +tags:
-          - 'link'
-      sats:
-        +tags:
-          - 'satellite'
-      t_links:
-        +tags:
-          - 't_link'
+          - 'raw_vault'
+        hubs:
+          +tags:
+            - 'hub'
+        links:
+          +tags:
+            - 'link'
+        sats:
+          +tags:
+            - 'satellite'
+        t_links:
+          +tags:
+            - 't_link'

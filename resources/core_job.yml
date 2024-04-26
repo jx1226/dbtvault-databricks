@@ -1,0 +1,271 @@
+resources:
+  jobs:
+    core_job:
+      name: core_job
+
+      tasks:
+        # Silver Layer
+        - task_key: enriched_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model enriched_orders'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+          - pypi:
+              package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: enriched_transactions
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model enriched_transactions'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: enriched_inventory
+          depends_on:
+            - task_key: enriched_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model enriched_inventory'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: v_stg_inventory
+          depends_on:
+            - task_key: enriched_inventory
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model v_stg_inventory'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+
+        - task_key: v_stg_orders
+          depends_on:
+            - task_key: enriched_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model v_stg_orders'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        
+        - task_key: v_stg_transactions
+          depends_on:
+            - task_key: enriched_transactions
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model v_stg_transactions'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        # Gold Layer
+        - task_key: hub_customer
+          depends_on:
+            - task_key: v_stg_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model hub_customer'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: hub_lineitem
+          depends_on:
+            - task_key: v_stg_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model hub_lineitem'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+          
+        - task_key: hub_nation
+          depends_on:
+            - task_key: v_stg_orders
+            - task_key: v_stg_inventory
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model hub_nation'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: link_customer_nation
+          depends_on:
+            - task_key: v_stg_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model link_customer_nation'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+        - task_key: link_customer_order
+          depends_on:
+            - task_key: v_stg_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model link_customer_order'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+
+        - task_key: link_inventory
+          depends_on:
+            - task_key: v_stg_inventory
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model link_inventory'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+
+        - task_key: sat_inv_inventory_details
+          depends_on:
+            - task_key: v_stg_inventory
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model sat_inv_inventory_details'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+
+        - task_key: sat_inv_supp_nation_details
+          depends_on:
+            - task_key: v_stg_inventory
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model sat_inv_supp_nation_details'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+
+        - task_key: sat_order_cust_nation_details
+          depends_on:
+            - task_key: v_stg_orders
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model sat_order_cust_nation_details'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+
+        - task_key: t_link_transactions
+          depends_on:
+            - task_key: v_stg_transactions
+          dbt_task:
+            project_directory: ../
+            # The default schema, catalog, etc. are defined in ../dbt_profiles/profiles.yml
+            profiles_directory: dbt_profiles/
+            commands:
+            - 'dbt debug'
+            - 'dbt deps --target=${bundle.target}'
+            - 'dbt run --target=${bundle.target} --model t_link_transactions'
+          existing_cluster_id: 0418-083919-hj4ytgn1
+          libraries:
+            - pypi:
+                package: dbt-databricks>=1.0.0,<2.0.0
+
+      queue:
+        enabled: true

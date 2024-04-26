@@ -13,4 +13,3 @@ SELECT
 FROM {{ source('tpch_sample', 'orders') }}  AS b
 LEFT JOIN {{ source('tpch_sample', 'customers') }} AS c
     ON b.O_CUSTKEY = c.C_CUSTKEY
-WHERE b.O_ORDERDATE = TO_DATE('{{ var('load_date') }}')

@@ -30,4 +30,3 @@ WITH staging AS (
 
 SELECT *
 FROM staging
-WHERE ORDER_DATE = TO_DATE('{{ var('load_date') }}')

@@ -1,7 +1,7 @@
 # This file defines dbt profiles for deployed dbt jobs.
 # Note that for local development you should create your own, local profile.
 # (see README.md).
-dbtvault-databricks:
+dbtvault_databricks:
    target: dev # default target
    outputs:
      dev:
